@@ -16,17 +16,23 @@ def map_function(file_name):
         for word, count in word_counts.items():
             temp_file.write(f"{word} : \"{count}\"\n")
 
-# Função Reduce
+ # Função Reduce
+processed_words = set()
+
 def reduce_function(word):
+    if word in processed_words:
+        return
+    processed_words.add(word)
+    
     counts = []
     with open(".temp.txt", "r") as temp_file:
         for line in temp_file:
             if line.startswith(word):
-                counts.append(line.split(":")[1].strip().strip('"'))
-    total_count = sum(int(count) for count in counts)
+                counts.append(int(line.split(":")[1].strip().strip('"')))
+    total_count = sum(counts)
     with open("final_output.txt", "a") as final_file:
         final_file.write(f"{word} : {total_count}\n")
-
+        
 # Função para gerenciar threads
 def process_files(file_names):
     threads = []
